@@ -1,0 +1,65 @@
+<html lang ="es">
+    <head>
+    <title>Página Inical</title>
+    <meta charset ="UTF-8"/>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <link rel ="stylesheet" type ="text/css"  href="css/AutoElectric.css"/>
+    <link   
+        rel ="icon"
+        type = "image/x-icon"
+        href = "https://www.upm.es/favicon.ico"
+    />
+
+    <link	rel="stylesheet"	href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"	crossorigin=""/>
+    <script	src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+    </head>
+    <body>
+    <article class="article">
+
+    <div id="res">
+        <h2> ¿Tienes un coche eléctrico?</h2>
+        <h2> ¿Quieres saber cual es la mejor ruta para ir a tu destino?</h2>
+        <h2> ¿Dónde puedes encontrar la estación de recarga más óptima?</h2>
+        <h2> ¿Quieres saber cuándo es la mejor hora para circular con tu automóvil?</h2>
+        <h2> ¿Circulas en zona de bajas emisiones?</h2>
+        
+    </div>
+
+    <div id="app">
+        <center>
+            <h1> <u>Pequeño resumen de AutoElectric </u></h1>
+        </center>
+        <p> La aplicación trata de encontrar la mejor ruta posible para automóviles eléctricos en la Comunidad de Madrid. Para calcular esta ruta, hay que rellenar un cuestionario,
+            con preguntas como inicio y llegada de la ruta, día y hora etc. <br><br>
+            Para ir a este cuestionario y poder calcular la ruta, hay que clickar en la pestaña "Aplicación" del menú superior o pinchando <a href ="mapa.html">Aquí.</a><br><br>
+            Finalmente, la ruta obtenida se representara en un mapa interactivo como el pequeño ejemplo de la derecha y con el color --------
+        </p>
+    </div>
+
+    <div id="map">
+
+        <script>
+            var map	=	L.map('map').	setView([40.41831, -3.70275],			10);
+    
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+    
+    L.control.scale().addTo(map);
+    
+    var popup	=	L.popup();
+    
+    polygon.on("click",	function(e){
+        popup.setLatLng(e.latlng)
+            .setContent("You clicked the	map	at	"	+	e.latlng.toString())
+            .openOn(map);
+    });
+        </script> 
+    </div>
+
+    
+</article>
+</body>
+</html>

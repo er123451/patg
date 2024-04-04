@@ -1,0 +1,21 @@
+#map{
+    height:100%;
+    width:85%;	
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;		
+    border-bottom: 1px solid;
+    float:left;
+}
+
+#cuestionario{
+    float:right;
+    position: relative;
+    display: block;
+    height:100%;
+    width:14.5%;	
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;					
+}
