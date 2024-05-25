@@ -1,34 +1,40 @@
-#res{
-    height:49%;
-    width: 99.90%;	
-    border-top: 1px solid;
-    border-left: 1px solid;
-    border-right: 1px solid;		
-    border-bottom: 1px solid;
-    text-align: center;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 20px;
-}
+body, html { margin: 0; padding: 0; height: 100%; }
+        #res, #app, #map {
+            box-sizing: border-box;
+            padding: 10px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 15px;
+        }
 
-#app{
-    float:left;
-    position: relative;
-    display: block;
-    height:50.5%;
-    width:49.85%;	
-    border-left: 1px solid;
-    border-bottom: 1px solid;		
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 20px;
-    padding-left:0.75px ;
-}
+        #res {
+            width: 100%;
+            height: 47%;
+            border-bottom: 1px;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 18px;
+            background: lightyellow;
+        }
+        #app, #map {
+            width: 50%;
+            height: 53%;
+            float: left;
+            font-size:18px;
+            background: lightyellow;
+            border-top: 1px solid;
+            
 
-#map{
-    float:right;
-    position: relative;
-    display: block;
-    height:50.5%;
-    width:50%;	
-    border-right: 1px solid;
-    border-bottom: 1px solid;					
-}
+        }
+        #map {
+            background: lightyellow;
+        }
+
+        @media (max-width: 850px) {
+            #app, #map {
+                width: 100%; 
+                float: none;
+            }
+        }
+
+        
+        

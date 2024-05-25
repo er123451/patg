@@ -1,9 +1,21 @@
-body{
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 15px;
-    height: 100%
-}
+body, html { margin: 0; padding: 0; height: 100%; }
+        #us {
+            box-sizing: border-box;
+            padding: 10px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 15px;
+        }
+       
+        #us{
+            float: left; 
+            height: 100%;
+            width: 100%; 
+            background: lightyellow;
+        }
+        @media (max-width: 800px) {
+            #us {
+                width: 100%; 
+                float: none;
+            }
+        }
 
-article h2{
-    text-align: center;
-}

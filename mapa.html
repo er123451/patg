@@ -14,66 +14,122 @@
     
 </head>
 <body>
-    <div id="map">
 
-    <script>
-        var map	=	L.map('map').	setView([40.41831, -3.70275],			10);
+  <div id="cuestionario">
+      <form action="http://<pagina_web>/api?from=<salida>&to=<llegada>&cargasalida=<TRUE/FALSE>&cargallegada=<TRUE/FALSE>" method="post">
+          <center>
+              <h2><u>Información requerida para el enrutamiento</u></h2>
+          </center>
+          <ul>
+              <li>
+                  <label for="origen"><b>Origen:</b></label>
+                  <input type="text" id="origen" name="user_origen" required />
+              </li><br>
+              <li>
+                  <label for="destino"><b>Destino:</b></label>
+                  <input type="text" id="destino" name="user_destino" required />
+              </li><br>
+              <li>
+                  <label><b>Cargador Origen:</b></label><br>
+                  <input type="radio" name="cargador_origen" value="Si" required> Si<br>
+                  <input type="radio" name="cargador_origen" value="No" required> No<br>
+              </li><br>
+              <li>
+                  <label><b>Cargador Destino:</b></label><br>
+                  <input type="radio" name="cargador_destino" value="Si" required> Si<br>
+                  <input type="radio" name="cargador_destino" value="No" required> No<br>
+              </li><br>
+              <li>
+                <label><b>Rango del Vehículo:</b></label><br>
+                <label for="cantidad">Cantidad:</label>
+                <input type="number" id="cantidad" name="cantidad" min="0" max="100" step="1" required>
+            </li><br>
+            <li class="button">
+                  <button type="submit">Calcular Ruta</button>
+              </li>
+          </ul>
+      </form>
+  </div>
+  <div id="map">
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+  <script>
+      var map = L.map('map').setView([40.41831, -3.70275], 10);
 
-L.control.scale().addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(map);
 
-var popup	=	L.popup();
+      L.control.scale().addTo(map);
 
-polygon.on("click",	function(e){
-    popup.setLatLng(e.latlng)
-		.setContent("You clicked the	map	at	"	+	e.latlng.toString())
-		.openOn(map);
-});
+      // Cargar y agregar datos GeoJSON al mapa
+      fetch('datos/example.json')
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Network response was not ok ' + response.statusText);
+              }
+              return response.json();
+          })
+          .then(data => {
+              L.geoJSON(data).addTo(map);
+          })
     </script>
     </div>
 
-<div id="cuestionario">
-<form action="/my-handling-form-page" method="post">
-    <center>
-    <h2><u>Información requerida para el enrutamiento</u></h2>
-    </center>
-    <ul>
-      <li>
-        <label for="name" target = "mapa"><b>Origen</b>:</label>
-        <input type="text" id="origen" name="user_origen" />
-      </li><br>
-      <li>
-        <label for="mail" target = "mapa"><b>Destino:</b></label>
-        <input type="text" id="destino" name="user_destino" />
-      </li><br>
-      <li>
-        <label for="msg" target = "mapa"><b>Cargador Origen:</b></label><br>
-        <input type="checkbox" name="Si"> Si<br>
-        <input type="checkbox" name="No"> No<br>
-      </li><br>
-      <li>
-        <label for="msg" target = "mapa"><b>Cargador Destino:</b></label><br>
-        <input type="checkbox" name="Si"> Si<br>
-        <input type="checkbox" name="No"> No<br>
-      </li><br>
-      <li>
-      <label for="start"><b>Fecha:</b></label>
-      <input type="date" id="start" name="trip-start" value="2024-07-01" min="2024-07-01" max="2030-12-31" />
-      </li><br>
-      <li>
-      <label for="start"><b>Hora:</b></label>
-      <input type="time" type="time" value="11:00" min="09:00" max="22:00" step="30">
-      </li><br>
-      <li class="button">
-        <button type="submit" target = "mapa">Calcular Ruta</button>
-      </li>
-    </ul>
-  </form>
+    <div id="datos">
+        <p id="resultado"></p>
+        <script>
+
+        //Cargar y funciones de para los Json
+      function convertirDistanciaYCoche() {
+        fetch('datos/example.json') 
+            .then(response => response.json())
+            .then(data => {
+                var DistanciaKilometros = data.length;
+                var DistanciaMetros = DistanciaKilometros;
+                Resultado(DistanciaMetros);
+                Coche(DistanciaMetros);
+            })
+            .catch(error => console.error('Error cargando el archivo JSON:', error));
+    }
+    function Resultado(DistanciaMetros) {
+        var resultado = document.getElementById('resultado');
+        resultado.innerHTML = '<h2>La distancia total de la ruta es:</h2>';
+        resultado.innerHTML += '<p>'+ DistanciaMetros +' metros</p>';
+    }
+
+    function Coche(DistanciaMetros) {
+        var Coche = "";
+        if (DistanciaMetros < 50000) {
+            Coche = "coche híbrido enchufable";
+        } else if (DistanciaMetros < 500000) {
+            Coche = "coche eléctrico";
+        } 
+
+        var resultado = document.getElementById('resultado');
+        resultado.innerHTML += '<h2>Recomendación de coche:</h2>';
+        resultado.innerHTML += '<p>Según la distancia del viaje, se recomienda un '+ Coche +'.</p>';
+
+        var ViajesSinCargar = 0;
+            var cargador_origen = "Si";
+            var cargador_destino = "No";
+            if (cargador_origen === "No" && cargador_destino === "No") {
+                ViajesSinCargar = Math.floor(500000 / DistanciaMetros);
+            }
+            resultado.innerHTML += '<h2>Número de viajes sin tener de cargar el coche:</h2>';
+            resultado.innerHTML += '<p>Con un '+ Coche +', puedes hacer aproximadamente '+ ViajesSinCargar +' viajes.</p>';
+        }
+
+
+  </script>
 </div>
+
+<script>
+    // Llamar a la función para cargar la información al cargar la página
+    window.onload = function() {
+        convertirDistanciaYCoche();
+    };
+</script>
 
 </body>
 </html>
