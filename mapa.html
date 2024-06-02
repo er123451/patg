@@ -1,134 +1,197 @@
-<html lang ="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
     <title>Página de la aplicación</title>
-    <meta charset ="UTF-8"/>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-    <link rel ="stylesheet" type ="text/css"  href="css/mapa.css"/>
-    <link   
-        rel ="icon"
-        type = "image/x-icon"
-        href = "https://www.upm.es/favicon.ico"
-    />
-    <link	rel="stylesheet"	href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"	crossorigin=""/>
-    <script	src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-    
+    <link rel="stylesheet" type="text/css" href="css/mapa.css">
+    <link rel="icon" type="image/x-icon" href="https://www.upm.es/favicon.ico">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 </head>
 <body>
 
-  <div id="cuestionario">
-      <form action="http://<pagina_web>/api?from=<salida>&to=<llegada>&cargasalida=<TRUE/FALSE>&cargallegada=<TRUE/FALSE>" method="post">
-          <center>
-              <h2><u>Información requerida para el enrutamiento</u></h2>
-          </center>
-          <ul>
-              <li>
-                  <label for="origen"><b>Origen:</b></label>
-                  <input type="text" id="origen" name="user_origen" required />
-              </li><br>
-              <li>
-                  <label for="destino"><b>Destino:</b></label>
-                  <input type="text" id="destino" name="user_destino" required />
-              </li><br>
-              <li>
-                  <label><b>Cargador Origen:</b></label><br>
-                  <input type="radio" name="cargador_origen" value="Si" required> Si<br>
-                  <input type="radio" name="cargador_origen" value="No" required> No<br>
-              </li><br>
-              <li>
-                  <label><b>Cargador Destino:</b></label><br>
-                  <input type="radio" name="cargador_destino" value="Si" required> Si<br>
-                  <input type="radio" name="cargador_destino" value="No" required> No<br>
-              </li><br>
-              <li>
-                <label><b>Rango del Vehículo:</b></label><br>
-                <label for="cantidad">Cantidad:</label>
-                <input type="number" id="cantidad" name="cantidad" min="0" max="100" step="1" required>
+<div id="cuestionario">
+    <form id="formulario">
+        <center>
+            <h2><u>Información requerida para el enrutamiento</u></h2>
+        </center>
+        <ul>
+            <li>
+                <label for="origen"><b>Origen:</b></label>
+                <input type="text" id="origen" name="dirfrom" required />
+            </li><br>
+            <li>
+                <label for="destino"><b>Destino:</b></label>
+                <input type="text" id="destino" name="dirto" required />
+            </li><br>
+            <li>
+                <label><b>Cargador Origen:</b></label><br>
+                <input type="radio" name="csalida" value="true" required> Si<br>
+                <input type="radio" name="csalida" value="false" required> No<br>
+            </li><br>
+            <li>
+                <label><b>Cargador Destino:</b></label><br>
+                <input type="radio" name="cllegada" value="true" required> Si<br>
+                <input type="radio" name="cllegada" value="false" required> No<br>
             </li><br>
             <li class="button">
-                  <button type="submit">Calcular Ruta</button>
-              </li>
-          </ul>
-      </form>
-  </div>
-  <div id="map">
+                <button type="submit">Calcular Ruta</button>
+            </li>
+        </ul>
+    </form>
+</div>
 
-  <script>
-      var map = L.map('map').setView([40.41831, -3.70275], 10);
+<div id="map"></div>
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-      }).addTo(map);
-
-      L.control.scale().addTo(map);
-
-      // Cargar y agregar datos GeoJSON al mapa
-      fetch('datos/example.json')
-          .then(response => {
-              if (!response.ok) {
-                  throw new Error('Network response was not ok ' + response.statusText);
-              }
-              return response.json();
-          })
-          .then(data => {
-              L.geoJSON(data).addTo(map);
-          })
-    </script>
-    </div>
-
-    <div id="datos">
-        <p id="resultado"></p>
-        <script>
-
-        //Cargar y funciones de para los Json
-      function convertirDistanciaYCoche() {
-        fetch('datos/example.json') 
-            .then(response => response.json())
-            .then(data => {
-                var DistanciaKilometros = data.length;
-                var DistanciaMetros = DistanciaKilometros;
-                Resultado(DistanciaMetros);
-                Coche(DistanciaMetros);
-            })
-            .catch(error => console.error('Error cargando el archivo JSON:', error));
-    }
-    function Resultado(DistanciaMetros) {
-        var resultado = document.getElementById('resultado');
-        resultado.innerHTML = '<h2>La distancia total de la ruta es:</h2>';
-        resultado.innerHTML += '<p>'+ DistanciaMetros +' metros</p>';
-    }
-
-    function Coche(DistanciaMetros) {
-        var Coche = "";
-        if (DistanciaMetros < 50000) {
-            Coche = "coche híbrido enchufable";
-        } else if (DistanciaMetros < 500000) {
-            Coche = "coche eléctrico";
-        } 
-
-        var resultado = document.getElementById('resultado');
-        resultado.innerHTML += '<h2>Recomendación de coche:</h2>';
-        resultado.innerHTML += '<p>Según la distancia del viaje, se recomienda un '+ Coche +'.</p>';
-
-        var ViajesSinCargar = 0;
-            var cargador_origen = "Si";
-            var cargador_destino = "No";
-            if (cargador_origen === "No" && cargador_destino === "No") {
-                ViajesSinCargar = Math.floor(500000 / DistanciaMetros);
-            }
-            resultado.innerHTML += '<h2>Número de viajes sin tener de cargar el coche:</h2>';
-            resultado.innerHTML += '<p>Con un '+ Coche +', puedes hacer aproximadamente '+ ViajesSinCargar +' viajes.</p>';
-        }
-
-
-  </script>
+<div id="datos">
+    <div id="resultado"></div>
 </div>
 
 <script>
-    // Llamar a la función para cargar la información al cargar la página
-    window.onload = function() {
-        convertirDistanciaYCoche();
-    };
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    });
+    
+    
+    routeLayer = L.geoJSON();
+    chargerLayer = L.geoJSON(null , {
+            pointToLayer: function(feature, latlng) {
+                var smallIcon = new L.Icon({
+                        iconSize: [27, 27],
+                        iconAnchor: [13, 27],
+                        popupAnchor:  [1, -24],
+                        iconUrl: 'images/electric-station.png'
+                });
+                return L.marker(latlng, {icon: smallIcon});
+            }
+        });
+
+    var baseMaps = {
+        "OpenStreetMap": osm
+    }
+    
+    var overlayMaps = {
+        "Chargers": chargerLayer,
+        "Route": routeLayer
+    }
+    
+    var map = L.map('map',{center: [40.41831, -3.70275],
+                            zoom: 10,
+                            layers: [osm, routeLayer,chargerLayer]});
+
+    var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+    document.getElementById('formulario').addEventListener('submit', function(event) {
+        event.preventDefault(); // Evitar el envío del formulario
+        var formData = new FormData(this);
+        var destino = formData.get('dirto');
+        calcularRuta(formData, destino);
+
+        //en caso de no haber cardagor en llegada o destino, obtener los cargadores cercanos
+        console.log(typeof(formData.get("cllegada")))
+        if(formData.get("cllegada")=="false"){
+            obtenerCargadores(formData.get("dirto"))
+            console.log("dirto")
+        }
+        if(formData.get("csalida")=="false"){
+            console.log("dirfrom")
+            obtenerCargadores(formData.get("dirfrom"))
+        }
+    });
+
+    function obtenerCargadores(dir) {
+        url = "http://"+location.hostname+":8000/chargers?dir=" + dir;
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al mostrar los cargadores: ' + response.status)
+                }
+                return response.json();
+            })
+            .then(data => {
+                this.chargerLayer.clearLayers()
+                var chargerIcon = L.icon({
+                        iconUrl: 'images/electric-station.png', 
+                        iconSize: [30, 30]
+                    });
+                this.chargerLayer.addData(data,{icon:chargerIcon});
+            })
+    }
+
+    function calcularRuta(formData, destino) {
+        var url = "http://"+location.hostname+":8000/route?" + new URLSearchParams(formData).toString()
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al cargar la ruta: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                this.routeLayer.clearLayers()
+                routeLayer.addData(data);
+                Resultados(data);
+                IconoDestino(destino);
+            })
+            .catch(error => console.error(error));
+    }
+
+
+    function Resultados(data) {
+        var distanciaTotal = data.length;
+        var resultado = document.getElementById('resultado');
+        resultado.innerHTML = '<h2><u>La distancia total de la ruta es:</u></h2>';
+        resultado.innerHTML += '<p>'+Math.round(distanciaTotal/10)/100+' kilometros</p>';
+
+        Coche(distanciaTotal);
+
+        document.getElementById('resultado').style.display = 'block';
+    }
+
+    function Coche(distanciaMetros) {
+        var Coche = "";
+        var KmAutonomia = 0;
+
+        if (distanciaMetros*2 < 50000) {
+            Coche = "coche híbrido enchufable";
+            KmAutonomia = 50; 
+        } else if (distanciaMetros*2 < 500000) {
+            Coche = "coche eléctrico";
+            KmAutonomia = 500;
+        } else {
+            Coche = "Ruta no recomendada para vehículos eléctricos.";
+        }
+
+        var resultado = document.getElementById('resultado');
+        resultado.innerHTML += '<h2><u>Recomendación de coche:</u></h2>';
+        resultado.innerHTML += '<p>Según la distancia del viaje, se recomienda un '+Coche+'.</p>';
+
+        if (KmAutonomia > 0) {
+            resultado.innerHTML += '<h2><u>Autonomía del coche:</u></h2>';
+            resultado.innerHTML += '<p>El coche puede recorrer aproximadamente '+KmAutonomia+' km por carga.</p>';
+        }
+    }
+
+    function IconoDestino(destino) {
+        var geocodeUrl = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(destino);
+
+        fetch(geocodeUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    var destinoCoords = [data[0].lat, data[0].lon];
+                    var finishIcon = L.icon({
+                        iconUrl: 'images/Meta.jpg', 
+                        iconSize: [30, 30],
+                        iconAnchor: [30, 40],
+                        popupAnchor: [0, -45]
+                    });
+
+                    L.marker(destinoCoords, { icon: finishIcon }).addTo(map).bindPopup('Destino');
+                }
+            })
+    }
 </script>
 
 </body>
